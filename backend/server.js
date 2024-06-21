@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
+import path from "path";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ connectDB();
 const app = express();
 
 const PORT = process.env.PORT || 4000;
+const __dirname = path.resolve();
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -26,5 +28,13 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postRoutes);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"));
+  });
+}
 
 app.listen(PORT, () => console.log(`Server started on PORT: ${PORT}`));
