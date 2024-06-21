@@ -6,10 +6,12 @@ import userRoutes from "./routes/userRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
 import { v2 as cloudinary } from "cloudinary";
 import path from "path";
+import job from "./crons/cron.js";
 
 dotenv.config();
 
 connectDB();
+job.start();
 
 const app = express();
 
